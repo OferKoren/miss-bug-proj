@@ -42,6 +42,20 @@ app.get('/api/bug/save', (req, res) => {
 //* READ
 app.get('/api/bug/:bugId', (req, res) => {
     const { bugId } = req.params
+
+    const { visitedBugs = [] } = req.cookies // use the default if undefined
+
+    console.log('visitedBugs', visitedBugs)
+
+    if (!visitedBugs.includes(bugId)) {
+        if (visitedBugs.length >= 3) {
+            console.log('here')
+            return res.status(401).send('Wait for a bit')
+        } else visitedBugs.push(bugId)
+
+        console.log('visitedBugs', visitedBugs)
+        res.cookie('visitedBugs', visitedBugs, { maxAge: 1000 * 7 })
+    }
     bugService
         .getById(bugId)
         .then((bug) => res.send(bug))
@@ -64,12 +78,12 @@ app.get('/api/bug/:bugId/remove', (req, res) => {
 })
 
 //* Cookies
-app.get('/puki', (req, res) => {
-    let visitedCount = req.cookies.visitedCount || 0
+/* app.get('/visitedBugs', (req, res) => {
+    let visitedCount = req.cookies.visitedBugs || []
     visitedCount++
-    res.cookie('visitedCount', visitedCount, { maxAge: 5 * 1000 })
+    res.cookie('visitedBugs', visitedCount, { maxAge: 5 * 1000 })
     console.log('visitedCount:', visitedCount)
     res.send('Hello Puki')
-})
+}) */
 const port = 3030
 app.listen(port, () => loggerService.info(`Server listening on port http://127.0.0.1:${port}/`))
