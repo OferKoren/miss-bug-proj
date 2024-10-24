@@ -28,7 +28,7 @@ export function BugDetails() {
                 <p>
                     Severity: <span>{bug.severity}</span>
                 </p>
-                description:prompt('decribe the bug')
+
                 {bug.description && (
                     <p>
                         description: <span>{bug.description}</span>
