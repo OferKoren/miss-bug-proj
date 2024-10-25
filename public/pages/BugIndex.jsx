@@ -7,12 +7,12 @@ const { useState, useEffect } = React
 
 export function BugIndex() {
     const [bugs, setBugs] = useState(null)
-    const [filterBy, setFilterBy] = useState({ title: '', severity: '' })
+    const [filterBy, setFilterBy] = useState({ title: '', minSeverity: '', pageIdx: 0 })
     useEffect(() => {
         loadBugs()
     }, [])
     useEffect(() => {
-        console.log('loding bugs cause filter changed')
+        // console.log('loding bugs cause filter changed')
         loadBugs()
     }, [filterBy])
 
@@ -35,7 +35,19 @@ export function BugIndex() {
             })
     }
     function onSetFilterBy(newFilter) {
+        if (filterBy.pageIdx !== 0) newFilter.pageIdx = 0
+        console.log(filterBy)
         setFilterBy((prevFilter) => ({ ...prevFilter, ...newFilter }))
+    }
+    function onChangePage(diff) {
+        let newPageIdx = +filterBy.pageIdx + diff
+        if (newPageIdx < 0) newPageIdx = 0
+        bugService.info().then((info) => {
+            console.log(info)
+            const { bugsCount, pageSize } = info
+            if (newPageIdx * pageSize >= bugsCount) newPageIdx = 0
+            setFilterBy((prevFilter) => ({ ...prevFilter, pageIdx: newPageIdx }))
+        })
     }
     function onAddBug() {
         const bug = {
@@ -82,7 +94,7 @@ export function BugIndex() {
                 <button onClick={onAddBug}>Add Bug ⛐</button>
             </section>
             <main>
-                <FilterBugs filterBy={filterBy} onSetFilterBy={onSetFilterBy} />
+                <FilterBugs filterBy={filterBy} onSetFilterBy={onSetFilterBy} onChangePage={onChangePage} />
                 <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
             </main>
         </main>
