@@ -116,7 +116,8 @@ nav a:hover {
 .filter-bug-form > :nth-child(2n) {
     grid-column: 2;
 }
-.filter-bug-form > :last-child {
+/* .filter-bug-form > :last-child {
     grid-column: 1 / span 2;
     justify-self: center;
 }
+ */

@@ -13,8 +13,9 @@ export const bugService = {
     info,
 }
 
-function query(filterBy) {
-    return axios.get(BASE_URL, { params: filterBy }).then((res) => res.data)
+function query(filterBy, sortBy) {
+    console.log(sortBy)
+    return axios.get(BASE_URL, { params: { ...filterBy, ...sortBy } }).then((res) => res.data)
     /* .then((bugs) => {
             if (filterBy.title) {
                 console.log('pipi')

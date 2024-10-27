@@ -16,7 +16,7 @@ export function info() {
 }
 
 function query(filterBy, sortBy, sortDir) {
-    console.log(filterBy)
+    console.log(sortBy)
     return Promise.resolve(bugs).then((bugs) => {
         if (filterBy.title) {
             const regExp = new RegExp(filterBy.title, 'i')
@@ -27,11 +27,7 @@ function query(filterBy, sortBy, sortDir) {
             bugs = bugs.filter((bug) => bug.severity >= filterBy.minSeverity)
         }
         gLength = bugs.length
-        if (filterBy.pageIdx !== undefined) {
-            console.log('got here')
-            const startIdx = +filterBy.pageIdx * PAGE_SIZE // 0,3,6
-            bugs = bugs.slice(startIdx, startIdx + PAGE_SIZE)
-        }
+
         switch (sortBy) {
             case 'createdAt': {
                 bugs.sort((b1, b2) => {
@@ -40,6 +36,7 @@ function query(filterBy, sortBy, sortDir) {
                 break
             }
             case 'severity': {
+                console.log(sortDir)
                 bugs.sort((b1, b2) => {
                     return (b1.severity - b2.severity) * sortDir
                 })
@@ -51,6 +48,10 @@ function query(filterBy, sortBy, sortDir) {
                 })
                 break
             }
+        }
+        if (filterBy.pageIdx !== undefined) {
+            const startIdx = +filterBy.pageIdx * PAGE_SIZE // 0,3,6
+            bugs = bugs.slice(startIdx, startIdx + PAGE_SIZE)
         }
         const bugsDate = bugs.map((bug) => {
             const date = new Date(bug.createdAt)

@@ -1,4 +1,4 @@
-export function FilterBugs({ filterBy, onSetFilterBy, onChangePage }) {
+export function FilterBugs({ filterBy, onSetFilterBy, onChangePage, sortBy, onSetSortBy }) {
     function handleChange({ target }) {
         const field = target.name
         let value = target.value
@@ -9,11 +9,14 @@ export function FilterBugs({ filterBy, onSetFilterBy, onChangePage }) {
                 break
 
             case 'checkbox':
-                value = target.checked
+                value = target.checked ? -1 : 1
                 break
         }
-        onSetFilterBy({ [field]: value })
+        if (field === 'sortBy' || field === 'sortDir') {
+            onSetSortBy({ [field]: value })
+        } else onSetFilterBy({ [field]: value })
     }
+
     return (
         <section className="filterBugs">
             <form action="" className="filter-bug-form">
@@ -29,6 +32,15 @@ export function FilterBugs({ filterBy, onSetFilterBy, onChangePage }) {
                     <button type="button" onClick={() => onChangePage(+1)}>
                         +
                     </button>
+                </div>
+                <div className="sortBy-wrapper">
+                    <select name="sortBy" id="" value={sortBy.sortBy} onChange={handleChange}>
+                        <option>createdAt</option>
+                        <option>severity</option>
+                        <option>title</option>
+                    </select>
+                    <label htmlFor="sortDir">sortDir</label>
+                    <input type="checkbox" name="sortDir" id="sortDir" onChange={handleChange} />
                 </div>
             </form>
         </section>
